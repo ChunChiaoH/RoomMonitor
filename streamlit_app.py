@@ -2,7 +2,10 @@ import streamlit as st
 import json
 import glob
 import os
-import time
+from streamlit_autorefresh import st_autorefresh
+
+# 每 60 秒刷新一次頁面（單位是毫秒）
+st_autorefresh(interval=60 * 1000, key="data_refresh")
 
 st.title("Room Monitor")
 
@@ -21,9 +24,3 @@ if data:
     st.metric("Temperature", f"{temperature}°C")
 else:
     st.warning("No data found.")
-
-# 自動刷新機制
-refresh_interval = 60  # 每 60 秒刷新
-st.caption(f"頁面將每 {refresh_interval} 秒自動更新")
-time.sleep(refresh_interval)
-st.experimental_rerun()
