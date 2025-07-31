@@ -13,7 +13,7 @@ data = response.json()
 # Step 2: 儲存成 JSON 檔
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 filename = f"data_{timestamp}.json"
-with open(f"./data/{filename}", "w") as f:
+with open(f"C:/Users/Joe/PycharmProjects/RoomMonitor/data/{filename}", "w") as f:
     json.dump(data, f, indent=2)
 
 # Step 3: Git 操作（commit + push）
