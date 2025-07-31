@@ -9,14 +9,21 @@ st_autorefresh(interval=60 * 1000, key="refresh")
 st.title("Room Monitor")
 
 # 讀取 latest.txt
-URL = "https://raw.githubusercontent.com/ChunChiaoH/RoomMonitor/refs/heads/main/data/latest.txt"
-
+URL_in_temperature = "https://raw.githubusercontent.com/ChunChiaoH/RoomMonitor/refs/heads/main/data/latest_in_temperature.txt"
+URL_ex_temperature = "https://raw.githubusercontent.com/ChunChiaoH/RoomMonitor/refs/heads/main/data/latest_ex_temperature.txt"
 try:
-    response = requests.get(URL)
-    response.raise_for_status()
-    lines = response.text.strip().splitlines()
+    response_in_temperature = requests.get(URL_in_temperature)
+    response_in_temperature.raise_for_status()
+    lines = response_in_temperature.text.strip().splitlines()
     latest_temp = lines[-1] if lines else "N/A"
-    st.metric("Latest Temperature", f"{latest_temp}°C")
+    st.metric("Latest Internal Temperature", f"{latest_temp}°C")
+
+    response_ex_temperature = requests.get(URL_ex_temperature)
+    response_ex_temperature.raise_for_status()
+    lines = response_ex_temperature.text.strip().splitlines()
+    latest_temp = lines[-1] if lines else "N/A"
+    st.metric("Latest External Temperature", f"{latest_temp}°C")
+
     st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 except Exception as e:
     st.error("Failed to fetch data.")
