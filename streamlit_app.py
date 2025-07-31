@@ -1,30 +1,23 @@
 import streamlit as st
-import json
-import glob
-import os
-from streamlit_autorefresh import st_autorefresh
+import requests
 from datetime import datetime
+from streamlit_autorefresh import st_autorefresh
 
-# 每 60 秒刷新一次頁面（單位是毫秒）
-st_autorefresh(interval=60 * 1000, key="data_refresh")
+# 每 60 秒刷新一次
+st_autorefresh(interval=60 * 1000, key="refresh")
 
 st.title("Room Monitor")
 
-# 顯示刷新時間
-st.caption(f"Last refreshed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+# 讀取 latest.txt
+URL = "https://raw.githubusercontent.com/ChunChiaoH/RoomMonitor/refs/heads/main/data/latest.txt"
 
-# 每次都讀取最新檔案
-def load_latest_data():
-    files = glob.glob("data/*.json")
-    if not files:
-        return None
-    latest_file = max(files, key=os.path.getctime)
-    with open(latest_file, "r") as f:
-        return json.load(f)
-
-data = load_latest_data()
-if data:
-    temperature = data["digitalSensors"][0]["temperature"]
-    st.metric("Temperature", f"{temperature}°C")
-else:
-    st.warning("No data found.")
+try:
+    response = requests.get(URL)
+    response.raise_for_status()
+    lines = response.text.strip().splitlines()
+    latest_temp = lines[-1] if lines else "N/A"
+    st.metric("Latest Temperature", f"{latest_temp}°C")
+    st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+except Exception as e:
+    st.error("Failed to fetch data.")
+    st.exception(e)

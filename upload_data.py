@@ -1,25 +1,40 @@
-import requests
-import json
-import time
-import os
-from datetime import datetime
 import subprocess
+import requests
+import datetime
+import os
 
-# Step 1: 抓取資料
-url = "http://1.44.148.206/api/v1/device/status"
-response = requests.get(url)
+# 假設你已經拿到這份 data
+response = requests.get("http://1.44.148.206/api/v1/device/status")
 data = response.json()
-# temperature=data["digitalSensors"][0]["temperature"]
-# Step 2: 儲存成 JSON 檔
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-filename = f"data_{timestamp}.json"
-with open(f"C:/Users/Joe/PycharmProjects/RoomMonitor/data/{filename}", "w") as f:
-    json.dump(data, f, indent=2)
+
+# 抓出溫度
+temperature = data["digitalSensors"][0]["temperature"]
+
+# 日期
+today_str = datetime.datetime.now().strftime("%d-%m-%y")
+log_filename = f"C:/Users/Joe/PycharmProjects/RoomMonitor/data/{today_str}.txt"
+latest_filename = "C:/Users/Joe/PycharmProjects/RoomMonitor/data/latest.txt"
+
+# 確保 data 資料夾存在
+os.makedirs("data", exist_ok=True)
+
+# 如果是當天第一次執行，就清空 latest.txt
+if not os.path.exists(log_filename):
+    with open(latest_filename, "w") as f:
+        f.write(f"{temperature}\n")
+else:
+    with open(latest_filename, "a") as f:
+        f.write(f"{temperature}\n")
+
+# 永遠 append 到當天的 log
+with open(log_filename, "a") as f:
+    f.write(f"{temperature}\n")
+
 
 # Step 3: Git 操作（commit + push）
 os.chdir(f"C:/Users/Joe/PycharmProjects/RoomMonitor")  # e.g., r"C:\Users\你\Documents\streamlit-repo"
 
 subprocess.run(["git", "pull"])
 subprocess.run(["git", "add", "data/"])  # 確保 JSON 在 data 資料夾
-subprocess.run(["git", "commit", "-m", f"Update data at {timestamp}"])
+subprocess.run(["git", "commit", "-m", f"Update data at latest and {today_str}"])
 subprocess.run(["git", "push"])
