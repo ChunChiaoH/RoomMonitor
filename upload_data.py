@@ -20,9 +20,15 @@ latest_filename_in_temperature = "C:/Users/Joe/PycharmProjects/RoomMonitor/data/
 log_filename_ex_temperature = f"C:/Users/Joe/PycharmProjects/RoomMonitor/data/{today_str}_ex_temperature.txt"
 latest_filename_ex_temperature = "C:/Users/Joe/PycharmProjects/RoomMonitor/data/latest_ex_temperature.txt"
 
+log_filename_in_humidity = f"C:/Users/Joe/PycharmProjects/RoomMonitor/data/{today_str}_in_humidity.txt"
+latest_filename_in_humidity = "C:/Users/Joe/PycharmProjects/RoomMonitor/data/latest_in_humidity.txt"
+log_filename_ex_humidity = f"C:/Users/Joe/PycharmProjects/RoomMonitor/data/{today_str}_ex_humidity.txt"
+latest_filename_ex_humidity = "C:/Users/Joe/PycharmProjects/RoomMonitor/data/latest_ex_humidity.txt"
+
 # 確保 data 資料夾存在
 os.makedirs("C:/Users/Joe/PycharmProjects/RoomMonitor/data", exist_ok=True)
 
+#region 溫度
 # 如果是當天第一次執行，就清空 latest.txt
 if not os.path.exists(log_filename_in_temperature):
     with open(latest_filename_in_temperature, "w") as f:
@@ -46,6 +52,33 @@ else:
 # 永遠 append 到當天的 log
 with open(log_filename_ex_temperature, "a") as f:
     f.write(f"{ex_temperature}\n")
+#endregion
+
+#region 濕度
+# 如果是當天第一次執行，就清空 latest.txt
+if not os.path.exists(log_filename_in_humidity):
+    with open(latest_filename_in_humidity, "w") as f:
+        f.write(f"{in_humidity}\n")
+else:
+    with open(latest_filename_in_humidity, "a") as f:
+        f.write(f"{in_humidity}\n")
+
+# 永遠 append 到當天的 log
+with open(log_filename_in_humidity, "a") as f:
+    f.write(f"{in_humidity}\n")
+
+# 如果是當天第一次執行，就清空 latest.txt
+if not os.path.exists(log_filename_ex_humidity):
+    with open(latest_filename_ex_humidity, "w") as f:
+        f.write(f"{ex_humidity}\n")
+else:
+    with open(latest_filename_ex_humidity, "a") as f:
+        f.write(f"{ex_humidity}\n")
+
+# 永遠 append 到當天的 log
+with open(log_filename_ex_humidity, "a") as f:
+    f.write(f"{ex_humidity}\n")
+#endregion
 
 
 # Step 3: Git 操作（commit + push）
