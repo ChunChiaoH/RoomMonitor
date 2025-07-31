@@ -3,11 +3,15 @@ import json
 import glob
 import os
 from streamlit_autorefresh import st_autorefresh
+from datetime import datetime
 
 # 每 60 秒刷新一次頁面（單位是毫秒）
 st_autorefresh(interval=60 * 1000, key="data_refresh")
 
 st.title("Room Monitor")
+
+# 顯示刷新時間
+st.caption(f"Last refreshed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 # 每次都讀取最新檔案
 def load_latest_data():
