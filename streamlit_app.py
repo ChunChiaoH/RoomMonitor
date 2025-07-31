@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 import glob
+import os
 
 # 找出最新的 JSON 檔
 files = glob.glob("data/*.json")
